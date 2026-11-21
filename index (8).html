@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ألفة 🌙</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#17112b;
+  --plum:#2b1f4d;
+  --moon:#f4efdc;
+  --lilac:#b9a2ff;
+  --rose:#ff93b4;
+  --text:#f4efdc;
+  --muted:#c9c0e6;
+  --display:"Aref Ruqaa","Amiri","Traditional Arabic",serif;
+  --body:"Tajawal","Segoe UI",Tahoma,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none !important}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  background:var(--night);
+  color:var(--text);
+  font-family:var(--body);
+  line-height:1.8;
+  min-height:100svh;
+  overflow-x:hidden;
+}
+body.locked{overflow:hidden}
+:focus-visible{outline:3px solid var(--rose);outline-offset:3px}
+
+/* ---------- Lock screen ---------- */
+#lock{
+  position:fixed;inset:0;z-index:50;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:1.4rem;padding:2rem;text-align:center;
+  background:radial-gradient(120% 90% at 50% 0%, var(--plum) 0%, var(--night) 70%);
+  transition:opacity .9s ease, visibility .9s;
+}
+#lock.gone{opacity:0;visibility:hidden}
+.moon{
+  width:min(52vw,230px);aspect-ratio:1;border-radius:50%;
+  background:
+    radial-gradient(circle at 32% 30%, #fffdf2 0%, var(--moon) 45%, #d9d1b4 100%);
+  box-shadow:0 0 60px 12px rgba(244,239,220,.28), 0 0 160px 40px rgba(185,162,255,.22);
+  position:relative;
+  animation:rise 2.4s cubic-bezier(.2,.7,.2,1) both;
+}
+.moon::before,.moon::after{
+  content:"";position:absolute;border-radius:50%;background:rgba(120,105,80,.16);
+}
+.moon::before{width:22%;height:22%;top:22%;left:56%}
+.moon::after{width:14%;height:14%;top:58%;left:30%}
+@keyframes rise{
+  from{transform:translateY(60px);opacity:0}
+  to{transform:none;opacity:1}
+}
+#lock h1{font-family:var(--display);font-weight:700;font-size:clamp(2rem,9vw,3rem);line-height:1.3}
+#lock p{color:var(--muted);max-width:22rem}
+#gate{display:flex;flex-direction:column;gap:.8rem;width:min(100%,19rem)}
+#pw{
+  font:inherit;font-size:1.1rem;text-align:center;
+  padding:.85rem 1rem;border-radius:999px;
+  border:1.5px solid rgba(244,239,220,.35);
+  background:rgba(255,255,255,.07);color:var(--text);
+}
+#pw::placeholder{color:rgba(244,239,220,.55)}
+#go{
+  font:inherit;font-weight:700;font-size:1.05rem;cursor:pointer;
+  padding:.85rem 1rem;border-radius:999px;border:0;
+  background:var(--moon);color:var(--night);
+}
+#go:active{transform:scale(.97)}
+#err{min-height:1.6rem;color:var(--rose);font-size:.95rem}
+.shake{animation:shake .4s}
+@keyframes shake{
+  20%{transform:translateX(-8px)}40%{transform:translateX(8px)}
+  60%{transform:translateX(-5px)}80%{transform:translateX(5px)}
+}
+
+/* ---------- Music chip ---------- */
+#chip{
+  position:fixed;z-index:40;top:max(.8rem,env(safe-area-inset-top));inset-inline-start:.8rem;
+  display:none;align-items:center;gap:.5rem;
+  font:inherit;font-size:.95rem;color:var(--text);cursor:pointer;
+  padding:.45rem .9rem;border-radius:999px;
+  background:rgba(23,17,43,.72);backdrop-filter:blur(8px);
+  border:1px solid rgba(244,239,220,.25);
+}
+body.open #chip{display:flex}
+#chip .ico{font-size:1rem}
+
+/* ---------- Story ---------- */
+main{display:none}
+body.open main{display:block}
+section{
+  min-height:100svh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:1.4rem;padding:4.5rem 1.4rem 3rem;text-align:center;
+}
+.hero{
+  background:radial-gradient(110% 80% at 50% 0%, var(--plum) 0%, var(--night) 75%);
+}
+.hero h2{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(3.4rem,17vw,7rem);line-height:1.15;
+}
+.hero .wish{font-size:clamp(1.2rem,5vw,1.6rem);color:var(--moon)}
+.count{
+  display:inline-flex;flex-direction:column;align-items:center;
+  padding:1rem 1.8rem;border-radius:1.2rem;
+  border:1.5px solid rgba(185,162,255,.5);
+}
+.count b{font-family:var(--display);font-size:clamp(2.4rem,11vw,3.6rem);line-height:1.2;color:var(--lilac)}
+.count span{color:var(--muted);font-size:.95rem}
+.hint{color:var(--muted);font-size:.9rem;margin-top:.5rem}
+
+.frame{
+  width:min(100%,26rem);
+  border-radius:1.4rem;overflow:hidden;
+  box-shadow:0 18px 50px rgba(0,0,0,.45);
+  background:var(--plum);
+}
+.frame img,.frame video{display:block;width:100%;height:auto}
+.frame.tall{width:min(78vw,19rem)}
+.cap{font-family:var(--display);font-size:clamp(1.5rem,6vw,2rem);line-height:1.6;max-width:20rem}
+.sub{color:var(--muted);max-width:21rem}
+
+/* ---------- Finale ---------- */
+.finale{
+  background:radial-gradient(110% 80% at 50% 100%, var(--plum) 0%, var(--night) 75%);
+  position:relative;overflow:hidden;
+}
+.finale h3{font-family:var(--display);font-weight:700;font-size:clamp(2.2rem,10vw,3.8rem);line-height:1.4}
+#nour{
+  font-family:var(--display);font-weight:700;font-size:1.5rem;cursor:pointer;
+  padding:.8rem 2.6rem;border-radius:999px;border:0;
+  background:linear-gradient(135deg,var(--rose),var(--lilac));color:var(--night);
+}
+#nour:active{transform:scale(.96)}
+#love{
+  max-width:21rem;color:var(--moon);font-size:1.15rem;
+  opacity:0;transform:translateY(10px);transition:opacity .9s ease,transform .9s ease;
+  min-height:5rem;
+}
+#love.show{opacity:1;transform:none}
+.heart{
+  position:absolute;bottom:-2rem;pointer-events:none;
+  animation:float 3.2s ease-out forwards;
+}
+@keyframes float{
+  to{transform:translateY(-110vh) rotate(18deg);opacity:0}
+}
+
+
+/* ---------- Birthday ---------- */
+.cd{color:var(--moon);font-weight:500;min-height:1.8rem}
+.cakeSec,.finale{position:relative;overflow:hidden}
+.cake{position:relative;width:15rem;height:13rem;margin-top:2.5rem}
+.tier1{position:absolute;bottom:0;left:0;right:0;height:5.2rem;border-radius:1rem;background:linear-gradient(var(--rose),#e8739a)}
+.tier2{position:absolute;bottom:5.2rem;left:2rem;right:2rem;height:3.6rem;border-radius:.9rem;background:linear-gradient(var(--lilac),#8f78e0)}
+.tier1::before,.tier2::before{content:"";position:absolute;top:0;left:0;right:0;height:.9rem;background:var(--moon);border-radius:.9rem .9rem .6rem .6rem}
+.candles{position:absolute;bottom:8.6rem;left:2.4rem;right:2.4rem;display:flex;justify-content:space-around}
+.candle{position:relative;width:2.6rem;height:4rem;background:none;border:0;cursor:pointer}
+.candle::after{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:.7rem;height:2.4rem;border-radius:.2rem;background:var(--moon)}
+.candle::before{
+  content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:.85rem;height:1.3rem;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+  background:radial-gradient(#fff 20%,#ffd25e 60%,#ff8a3d);
+  box-shadow:0 0 14px 4px rgba(255,200,90,.55);
+  animation:flick .5s ease-in-out infinite alternate;
+}
+.candle.out::before{display:none}
+@keyframes flick{to{transform:translateX(-50%) scale(.9,1.08) rotate(3deg)}}
+#blow{
+  font:inherit;font-weight:700;cursor:pointer;padding:.7rem 1.6rem;border-radius:999px;
+  border:1.5px solid var(--moon);background:transparent;color:var(--moon);
+}
+#wishLine{
+  max-width:21rem;color:var(--moon);font-family:var(--display);font-size:1.5rem;line-height:1.7;
+  opacity:0;transform:translateY(10px);transition:opacity .9s ease,transform .9s ease;min-height:6rem;
+}
+#wishLine.show{opacity:1;transform:none}
+.letters{width:min(100%,24rem);display:flex;flex-direction:column;gap:.8rem}
+.letters details{border:1.5px dashed rgba(185,162,255,.6);border-radius:1rem;background:rgba(255,255,255,.05);text-align:start}
+.letters summary{cursor:pointer;padding:.9rem 1.1rem;font-family:var(--display);font-size:1.25rem;list-style:none}
+.letters summary::-webkit-details-marker{display:none}
+.letters details[open] summary{color:var(--rose)}
+.letters p{padding:0 1.1rem 1.1rem;color:var(--moon)}
+#voice{width:min(100%,22rem)}
+#reply{
+  display:none;text-decoration:none;font-weight:700;
+  padding:.75rem 1.8rem;border-radius:999px;background:var(--moon);color:var(--night);
+}
+
+@media (prefers-reduced-motion:reduce){
+  .moon{animation:none}
+  .heart{display:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body class="locked">
+
+<!-- ========== شاشة الباسورد ========== -->
+<div id="lock">
+  <div class="moon" aria-hidden="true"></div>
+  <h1>ألفة 🌙</h1>
+  <p>فيه حاجة مستنياكي جوه. اكتبي الباسورد.</p>
+  <p id="cd" class="cd"></p>
+  <form id="gate" autocomplete="off">
+    <input id="pw" type="text" inputmode="numeric" placeholder="تاريخ اكتمال القمر 🌕" aria-label="الباسورد">
+    <button id="go" type="submit">افتحي</button>
+    <div id="err" role="alert"></div>
+  </form>
+</div>
+
+<button id="chip" type="button" aria-label="تشغيل أو إيقاف الأغنية">
+  <span class="ico" id="chipIco">♪</span><span>نور عيني</span>
+</button>
+
+<audio id="song" src="music.mp3" loop preload="auto"></audio>
+
+<main>
+  <!-- ========== البداية ========== -->
+  <section class="hero">
+    <h2>ألفة</h2>
+    <p class="wish" id="wish">كل سنة وانتي طيبة</p>
+    <div class="count">
+      <b id="days">0</b>
+      <span>يوم من يوم 19 يوليو</span>
+    </div>
+    <p class="hint">انزلي تحت</p>
+  </section>
+
+  <!-- ========== صورة 1 ========== -->
+  <section>
+    <div class="frame"><img src="photo1.jpg" alt="ألفة" loading="lazy"></div>
+    <p class="cap">أحلى ضحكة في الدنيا</p>
+    <p class="sub">ولسه فاكر أول مرة شفتها فيها.</p>
+  </section>
+
+  <!-- ========== فيديو 1 ========== -->
+  <section>
+    <div class="frame tall"><video src="video1.mp4" muted loop playsinline preload="metadata"></video></div>
+    <p class="cap">وحتى وانتي بتهزري</p>
+    <p class="sub">بتبقي أحلى.</p>
+  </section>
+
+  <!-- ========== صورة 2 ========== -->
+  <section>
+    <div class="frame tall"><img src="photo2.jpg" alt="ألفة" loading="lazy"></div>
+    <p class="cap">وبوزك ده بالذات</p>
+    <p class="sub">بحبه أكتر مما تتخيلي.</p>
+  </section>
+
+  <!-- ========== فيديو 2 ========== -->
+  <section>
+    <div class="frame tall"><video src="video2.mp4" muted loop playsinline preload="metadata"></video></div>
+    <p class="cap">كل لحظة معاكي</p>
+    <p class="sub">حاجة بتتحفظ.</p>
+  </section>
+
+  <!-- ========== التورتة ========== -->
+  <section class="cakeSec" id="cakeSec">
+    <p class="cap">النهارده عيد ميلادك</p>
+    <p class="sub">اطفي الشمع بإيدك، أو انفخي عليه بجد.</p>
+    <div class="cake" aria-label="تورتة">
+      <div class="candles">
+        <button class="candle" type="button" aria-label="شمعة"></button>
+        <button class="candle" type="button" aria-label="شمعة"></button>
+        <button class="candle" type="button" aria-label="شمعة"></button>
+      </div>
+      <div class="tier2"></div>
+      <div class="tier1"></div>
+    </div>
+    <button id="blow" type="button">انفخي بالميكروفون</button>
+    <p id="wishLine"></p>
+  </section>
+
+  <!-- ========== الجوابات ========== -->
+  <section>
+    <p class="cap">جوابات مني</p>
+    <p class="sub">مكتوبة عشان أبقى جنبك حتى لو مش موجود.</p>
+    <div class="letters" id="letters"></div>
+  </section>
+
+  <!-- ========== رسالة صوتية (بتظهر بس لو رفعت voice.mp3) ========== -->
+  <section id="voiceSec" hidden>
+    <p class="cap">سمعي ده</p>
+    <p class="sub">صوتي، عشان مقدرتش أبقى جنبك.</p>
+    <audio id="voice" controls preload="metadata" src="voice.mp3"></audio>
+  </section>
+
+  <!-- ========== النهاية ========== -->
+  <section class="finale" id="finale">
+    <h3>كل سنة وانتي طيبة يا ألوفتي</h3>
+    <button id="nour" type="button">نور عيني</button>
+    <p id="love"></p>
+    <a id="reply" href="#" target="_blank" rel="noopener">ابعتيلي رد</a>
+  </section>
+</main>
+
+<script>
+/* ============ إعدادات سهلة التعديل ============ */
+const CONFIG = {
+  // الباسورد: اكتب أي عدد من الاحتمالات (بالأرقام بس، من غير مسافات أو شرطات).
+  // بيتقبل أي شكل: 22/11/2007 أو 22-11-2007 أو 22112007 أو بالأرقام العربي، كلها نفس الحاجة
+  passwords: ["22112007"],
+  wrongMsg: "لا مش هو.. فكّري في القمر تاني 🌙",
+  startDate: "2026-07-19",       // تاريخ بداية العلاقة
+  finalLine: "بحبك يا ألفة. ودايماً هفضل أقولهالك.",  // الجملة اللي بتظهر بعد زرار نور عيني
+  birthday: "2007-11-22",        // تاريخ ميلادها
+  wishLine: "اتمني أمنية في قلبك.. وأنا هعمل كل اللي أقدر عليه عشان تتحقق 💜",
+  // رقم واتساب بتاعك بالصيغة الدولية من غير + (مثال: 201012345678). سيبه فاضي لو مش عايز الزرار.
+  whatsapp: "",
+  replyText: "وصلتني هديتك 🥹💜",
+  // الجوابات: عدّل الكلام براحتك وزوّد أو امسح
+  letters: [
+    { title: "افتحيها لما توحشيني",
+      text: "أنا عارف إني مش جنبك النهارده، وده أصعب جزء. بس اعرفي إني بفكر فيكي في كل لحظة، وكل حاجة في الموقع ده عملتها بإيدي وأنا بفكر في ضحكتك." },
+    { title: "افتحيها لما تزعلي",
+      text: "لو زعلانة من أي حاجة، افتكري إنك أقوى مما بتفتكري، وإن فيه حد بيحبك أوي ومستعد يسمعك في أي وقت. كلميني وأنا هنا." },
+    { title: "افتحيها لما تضحكي",
+      text: "اضحكي كتير النهارده، لأن ضحكتك أحلى حاجة في عيني. وأنا هعوّضك عن غيابي إن شاء الله." },
+    { title: "افتحيها قبل ما تنامي",
+      text: "كل سنة وانتي طيبة يا نور عيني. اللي جاي معانا أحلى، وهنحتفل بيكي صح أول ما أشوفك." }
+  ]
+};
+/* ============================================== */
+
+const $ = id => document.getElementById(id);
+const song = $("song");
+const lock = $("lock");
+
+// تحويل الأرقام العربية لإنجليزي وشيل أي حاجة مش رقم
+function norm(s){
+  return s.replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d))
+          .replace(/[۰-۹]/g, d => "۰۱۲۳۴۵۶۷۸۹".indexOf(d))
+          .replace(/\D/g, "");
+}
+
+$("gate").addEventListener("submit", e => {
+  e.preventDefault();
+  const v = norm($("pw").value);
+  if (CONFIG.passwords.map(norm).includes(v)) {
+    unlock();
+  } else {
+    $("err").textContent = CONFIG.wrongMsg;
+    const g = $("gate");
+    g.classList.remove("shake"); void g.offsetWidth; g.classList.add("shake");
+  }
+});
+
+function unlock(){
+  document.body.classList.remove("locked");
+  document.body.classList.add("open");
+  lock.classList.add("gone");
+  song.play().then(()=>setChip(true)).catch(()=>setChip(false));
+  startCounter();
+  watchVideos();
+  applyBirthday();
+}
+
+// ---- زرار الأغنية ----
+function setChip(playing){ $("chipIco").textContent = playing ? "❚❚" : "♪"; }
+$("chip").addEventListener("click", () => {
+  if (song.paused) { song.play(); setChip(true); }
+  else { song.pause(); setChip(false); }
+});
+
+// ---- عداد الأيام ----
+function startCounter(){
+  const start = new Date(CONFIG.startDate + "T00:00:00");
+  const days = Math.max(0, Math.floor((Date.now() - start.getTime()) / 86400000));
+  const el = $("days");
+  const target = days;
+  let n = 0;
+  const step = Math.max(1, Math.ceil(target / 60));
+  const t = setInterval(() => {
+    n = Math.min(target, n + step);
+    el.textContent = n;
+    if (n >= target) clearInterval(t);
+  }, 25);
+}
+
+// ---- الفيديوهات بتشتغل لما تبان على الشاشة ----
+function watchVideos(){
+  const vids = document.querySelectorAll("video");
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) en.target.play().catch(()=>{});
+      else en.target.pause();
+    });
+  }, { threshold: .5 });
+  vids.forEach(v => io.observe(v));
+}
+
+// ---- زرار نور عيني ----
+$("nour").addEventListener("click", () => {
+  const love = $("love");
+  love.textContent = CONFIG.finalLine;
+  love.classList.add("show");
+  if (song.paused) { song.currentTime = 0; song.play(); setChip(true); }
+  burst($("finale"));
+});
+
+function burst(box, icons, count){
+  icons = icons || ["💜","🤍","🌙","💗"];
+  count = count || 22;
+  for (let i = 0; i < count; i++) {
+    const h = document.createElement("span");
+    h.className = "heart";
+    h.textContent = icons[i % icons.length];
+    h.style.left = Math.random() * 92 + "%";
+    h.style.fontSize = (1 + Math.random() * 1.4) + "rem";
+    h.style.animationDelay = (Math.random() * .9) + "s";
+    box.appendChild(h);
+    setTimeout(() => h.remove(), 4500);
+  }
+}
+
+/* ---------- عيد الميلاد ---------- */
+function bdayState(){
+  const now = new Date();
+  const b = new Date(CONFIG.birthday + "T00:00:00");
+  const t = new Date(now.getFullYear(), b.getMonth(), b.getDate());
+  return { now, t, age: now.getFullYear() - b.getFullYear(), reached: now >= t };
+}
+
+function updateCountdown(){
+  const st = bdayState();
+  const el = $("cd");
+  if (st.reached) { el.textContent = "كل سنة وانتي طيبة 🎂"; return; }
+  const mins = Math.floor((st.t - st.now) / 60000);
+  const d = Math.floor(mins / 1440), h = Math.floor((mins % 1440) / 60), m = mins % 60;
+  el.textContent = d >= 2
+    ? "باقي " + d + " يوم و" + h + " ساعة على عيد ميلادك 🎂"
+    : "باقي " + Math.floor(mins / 60) + " ساعة و" + m + " دقيقة على عيد ميلادك 🎂";
+}
+updateCountdown();
+setInterval(updateCountdown, 30000);
+
+function applyBirthday(){
+  const st = bdayState();
+  if (st.reached) $("wish").textContent = "عيد ميلادك الـ " + st.age + " 🎂";
+  else $("cakeSec").querySelector(".cap").textContent = "عيد ميلادك قرّب";
+}
+
+// ---- الشمع ----
+const candles = [...document.querySelectorAll(".candle")];
+let celebrated = false;
+
+function checkCandles(){
+  if (celebrated || !candles.every(c => c.classList.contains("out"))) return;
+  celebrated = true;
+  burst($("cakeSec"), ["🎉","🎊","✨","💜","🌙"], 34);
+  const w = $("wishLine");
+  w.textContent = CONFIG.wishLine;
+  w.classList.add("show");
+}
+candles.forEach(c => c.addEventListener("click", () => { c.classList.add("out"); checkCandles(); }));
+
+function outAll(){
+  candles.forEach((c, i) => setTimeout(() => { c.classList.add("out"); checkCandles(); }, i * 250));
+}
+
+$("blow").addEventListener("click", async () => {
+  const btn = $("blow");
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const ac = new AC();
+    const an = ac.createAnalyser();
+    an.fftSize = 512;
+    ac.createMediaStreamSource(stream).connect(an);
+    const buf = new Uint8Array(an.fftSize);
+    btn.textContent = "انفخي دلوقتي...";
+    let hits = 0, raf, done = false;
+    const stop = () => {
+      done = true; cancelAnimationFrame(raf);
+      stream.getTracks().forEach(t => t.stop());
+      ac.close();
+      btn.textContent = "انفخي بالميكروفون";
+    };
+    const tick = () => {
+      if (done) return;
+      an.getByteTimeDomainData(buf);
+      let sum = 0;
+      for (const v of buf) { const x = (v - 128) / 128; sum += x * x; }
+      hits = Math.sqrt(sum / buf.length) > 0.12 ? hits + 1 : 0;
+      if (hits >= 5) { stop(); outAll(); return; }
+      raf = requestAnimationFrame(tick);
+    };
+    tick();
+    setTimeout(() => { if (!done) stop(); }, 15000);
+  } catch (err) {
+    btn.textContent = "اضغطي على الشمع بإيدك";
+  }
+});
+
+// ---- الجوابات ----
+CONFIG.letters.forEach(l => {
+  const d = document.createElement("details");
+  const sm = document.createElement("summary");
+  sm.textContent = "✉ " + l.title;
+  const p = document.createElement("p");
+  p.textContent = l.text;
+  d.append(sm, p);
+  $("letters").appendChild(d);
+});
+
+// ---- الرسالة الصوتية (بتظهر لو الملف موجود) ----
+const voice = $("voice");
+voice.addEventListener("loadedmetadata", () => { $("voiceSec").hidden = false; });
+let resume = false;
+voice.addEventListener("play", () => { resume = !song.paused; song.pause(); setChip(false); });
+voice.addEventListener("pause", () => { if (resume) { song.play(); setChip(true); resume = false; } });
+
+// ---- رد على واتساب ----
+if (CONFIG.whatsapp) {
+  const a = $("reply");
+  a.href = "https://wa.me/" + CONFIG.whatsapp.replace(/\D/g, "") + "?text=" + encodeURIComponent(CONFIG.replyText);
+  a.style.display = "inline-block";
+}
+</script>
+</body>
+</html>
